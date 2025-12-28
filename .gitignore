@@ -1,0 +1,17 @@
+# Godot 4.x editor cache and metadata
+.godot/
+
+# Godot 3.x import artifacts (safe to ignore if present)
+.import/
+
+# Export output
+export/
+.export/
+
+# C# / Mono builds
+.mono/
+
+# OS/editor noise
+.DS_Store
+*~
+*.swp
