@@ -46,7 +46,37 @@ This sequence breaks down the demo's event flow and the systems responsible for 
     -   The job is marked `complete` in `PlayerStateComponent`.
     -   A UI prompt appears: "Demo Complete. Return to Title?"
 
-## 2. New Component Definitions
+## 2. Player Controls & Interaction Rules
+
+### Input Map (Project Settings > Input Map)
+
+-   `move_forward`, `move_back`, `move_left`, `move_right`: `W/S/A/D`, Arrow keys
+-   `look_x`, `look_y`: Mouse motion (camera yaw/pitch)
+-   `sprint`: `Shift`
+-   `interact`: `E`
+-   `dialog_next`: `Space`, `Enter`
+-   `dialog_choice_1`..`dialog_choice_4`: `1`..`4`
+-   `ui_up`, `ui_down`: Arrow keys, `W/S`, gamepad left stick
+-   `ui_accept`: `Enter`, `Space`, gamepad south button
+-   `ui_cancel`: `Esc`
+
+### Movement & Camera
+
+-   **Movement model**: 3rd-person, camera-relative movement using `CharacterBody3D`. Default is walk; hold `sprint` for run. Keep movement grounded with slope limit and snap to floor enabled.
+-   **Camera**: `SpringArm3D` + `Camera3D` follow camera. Mouse controls yaw/pitch; clamp pitch to avoid flipping (e.g., `-35` to `55` degrees). Camera collision enabled to avoid clipping through geometry.
+
+### Interaction Detection & Prompt Rules
+
+-   **Detection**: Player owns an `Area3D` sensor. Each frame, `InteractionSystem` gathers overlapping nodes with `InteractionComponent`, filters by distance (e.g., <= 2.5m), and ensures line-of-sight using a raycast from the camera to the candidate.
+-   **Target selection**: Choose the nearest valid target; if distance ties, prefer the one closest to screen center.
+-   **Prompt**: Show a single prompt when a target is selected. Format: `"[E] {interaction_prompt}"`. Hide when no valid target or when dialog UI is active.
+
+### Item Pickup & Delivery Rules
+
+-   **Pickup**: On `interact` with `chip_item.tscn`, remove or disable the item node, add its scene reference to `InventoryComponent.items`, and emit an `item_taken(item_id)` signal for `ObjectiveSystem`.
+-   **Delivery**: On `interact` at a delivery marker, check for the chip in inventory. If present, remove it, emit `item_delivered(item_id, marker_id)`, and allow `ObjectiveSystem` to complete the delivery objective. If missing, show a short UI hint (e.g., "You need the chip.").
+
+## 3. New Component Definitions
 
 These components are `Resource` scripts (`.gd`) to be stored in `/components/`.
 
@@ -64,7 +94,7 @@ These components are `Resource` scripts (`.gd`) to be stored in `/components/`.
 -   **`ObjectiveSpawnPointComponent.gd`**: A tag for `Marker3D` nodes used by spawning logic.
     -   `pool_name: String` (e.g., "pickup", "delivery")
 
-## 3. System Implementation Details
+## 4. System Implementation Details
 
 Logic for the primary `Autoload` systems.
 
@@ -81,7 +111,35 @@ Logic for the primary `Autoload` systems.
     -   For each active job, it checks the completion criteria of its objectives against world state (e.g., item in inventory, signal from `DialogSystem`).
     -   Updates the status of `Job` and `Objective` resources.
 
-## 4. Resource & Scene Definitions
+## 5. UI Requirements
+
+### Title Screen
+
+-   **Layout**: Scenario list on the left, details pane on the right with scenario name and a short description. Show a single primary action button: "Start Demo".
+-   **Population**: `GameStateSystem` provides scenario entries from `/scenarios/` using `scenario_name` in `scenario.json`.
+-   **Navigation**: `ui_up`/`ui_down` to select, `ui_accept` to start, `ui_cancel` to exit (if supported by platform).
+-   **Transition**: On confirm, fade out the UI, call `GameStateSystem` to load the map, then fade into gameplay.
+
+### Dialog UI & Choice Flow
+
+-   **Dialog box**: Bottom screen, left-aligned speaker name, body text centered in a readable box.
+-   **Choices**: Present up to 4 choices with numeric labels (`1`..`4`) and highlight the current selection.
+-   **Input**: `dialog_next` advances non-choice lines. Choices use `ui_up`/`ui_down` + `ui_accept` or number keys.
+-   **Job surfacing**: When a dialog node offers/accepts a job, show a short toast (e.g., "Job Accepted: Chip Delivery").
+
+### Job & Objective HUD
+
+-   **Placement**: Top-left HUD panel with current job title and objective checklist.
+-   **Updates**: When objectives complete, mark them with a check icon and briefly flash the line.
+-   **Feedback**: Show a transient banner when the job status changes (e.g., "Objectives Complete — Return to Kess").
+
+### "Demo Complete" Prompt
+
+-   **Trigger**: Fired when `DialogSystem` emits the final completion event after `chip_delivery` is turned in.
+-   **Modal**: Centered prompt with text: "Demo Complete" and subtext: "Return to title?" Buttons: "Return to Title" and "Quit".
+-   **Behavior**: Locks player input behind the modal. `ui_accept` confirms the highlighted option; `ui_cancel` defaults to "Return to Title".
+
+## 6. Resource & Scene Definitions
 
 -   **/scenarios/chip_delivery/scenario.json**:
     ```json
@@ -105,7 +163,54 @@ Logic for the primary `Autoload` systems.
     -   `title: "Chip Delivery"`
     -   `giver: "Kess the Fixer"`
     -   `objectives: [Objective resource for retrieve, Objective resource for deliver]`
+-   **/ui/DialogBox.tscn**: Dialog UI layout for speaker text, choices, and job toasts.
+-   **/ui/HUD.tscn**: Active job/objective panel.
+-   **/ui/DemoCompletePrompt.tscn**: End-of-demo modal prompt.
 
-## 5. File Structure
+### Quick Reference Paths
+
+-   `res://scenarios/chip_delivery/scenario.json`
+-   `res://scenarios/chip_delivery/maps/exterior.tscn`
+-   `res://scenarios/chip_delivery/jobs/report_to_kess.tres`
+-   `res://scenarios/chip_delivery/jobs/chip_delivery.tres`
+-   `res://scenarios/chip_delivery/dialog/chip_delivery_dialog.tres`
+-   `res://entities/Player.tscn`
+-   `res://entities/Kess_the_Fixer.tscn`
+-   `res://entities/chip_item.tscn`
+-   `res://ui/TitleScreen.tscn`
+-   `res://ui/DialogBox.tscn`
+-   `res://ui/HUD.tscn`
+-   `res://ui/DemoCompletePrompt.tscn`
+-   `res://autoloads/GameStateSystem.gd`
+-   `res://autoloads/SpawningSystem.gd`
+-   `res://autoloads/InteractionSystem.gd`
+-   `res://autoloads/DialogSystem.gd`
+-   `res://autoloads/ObjectiveSystem.gd`
+-   `res://components/PlayerStateComponent.gd`
+-   `res://components/NPCStateComponent.gd`
+-   `res://components/InventoryComponent.gd`
+-   `res://components/InteractionComponent.gd`
+-   `res://components/ObjectiveSpawnPointComponent.gd`
+
+## 7. File Structure
 
 The required file and directory structure for this demo is detailed in the main `architecture.md` document.
+
+## 8. Editor vs Code Responsibilities
+
+Use the Godot editor for scene setup and default resources; use code for runtime logic and state changes.
+
+### Manual in Godot Editor
+
+-   **Input Map**: Define the actions and default bindings in Project Settings.
+-   **Scenes**: Build `Player.tscn`, `Kess_the_Fixer.tscn`, `chip_item.tscn`, and `TitleScreen.tscn` with their nodes and scripts.
+-   **Autoloads**: Register `GameStateSystem`, `SpawningSystem`, `InteractionSystem`, `DialogSystem`, and `ObjectiveSystem` in Project Settings.
+-   **Resources**: Create `.tres` assets for jobs, objectives, and dialog trees; set fields in the inspector.
+-   **Map Markers**: Place `Marker3D` nodes with `ObjectiveSpawnPointComponent` on `exterior.tscn`.
+
+### Implemented in Code
+
+-   **Systems**: Runtime logic for spawning, interaction checks, dialog flow, and objective evaluation.
+-   **Signals**: Emit and connect signals between systems (`item_taken`, `item_delivered`, dialog events).
+-   **State Updates**: Modify `PlayerStateComponent`, `Job` status, and `Objective` instances at runtime.
+-   **Target Resolution**: Resolve objective targets (marker selection, item refs) when a job activates.

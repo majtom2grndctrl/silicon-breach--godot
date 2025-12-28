@@ -12,6 +12,11 @@ The architecture avoids a pure ECS implementation in favor of a hybrid model tha
 -   **Entities as Nodes**: Entities are represented by Godot `Node`s or full `PackedScene` instances within the scene tree. Any Node meant to act as an entity will have a `ComponentHost.gd` script attached. This script manages a dictionary of the components associated with that entity.
 -   **Systems as Autoloads**: Game logic is implemented in "Systems," which are GDScript files registered as Godot Autoload singletons. These systems run globally and operate on entities by iterating through the scene tree, finding nodes with a `ComponentHost`, and processing their components.
 
+### Implementation Guidelines
+
+-   Favor simple, readable code over clever abstractions.
+-   Use types where applicable (typed GDScript, typed arrays) to keep intent clear.
+
 ### ComponentHost API and Conventions
 
 `ComponentHost.gd` is the single source of truth for component storage and lookup on an entity node.
@@ -57,6 +62,13 @@ A clear file structure is crucial for organization and moddability. The followin
 |-- project.godot
 ```
 
+## 2.1 Editor vs Code Responsibilities
+
+Keep authored content in the editor; keep runtime behavior in code.
+
+-   **Editor**: Configure Input Map, assemble scenes (`res://entities/`, `res://ui/`), register Autoloads, and author `.tres` resources in the inspector.
+-   **Code**: Implement system logic, connect signals, resolve runtime targets, and update component data and job/objective state.
+
 ## 3. Systems and Logic
 
 Systems are decoupled. Spawning systems set up the world, while Logic systems react to changes in it.
@@ -75,12 +87,27 @@ Systems are decoupled. Spawning systems set up the world, while Logic systems re
 Jobs are procedurally generated from objective templates.
 
 -   **Job Resource (`.tres`)**: A custom resource defining a job. It contains metadata (title, description, reward) and a list of objective specifications.
+    -   **Fields**: `id`, `title`, `description`, `giver`, `reward`, `objectives`, `status`.
+    -   **Objective specs**: Each entry in `objectives` is either a direct `Objective` resource reference or a category token (e.g., `"assassination"`). `SpawningSystem` resolves tokens into concrete objective resources at runtime.
+    -   **Runtime instances**: On accept, `SpawningSystem` builds a resolved list (e.g., `objective_instances`) so `ObjectiveSystem` evaluates concrete objectives, not category tokens.
+    -   **Status lifecycle**: `available` -> `active` on accept; `active` -> `awaiting_turn_in` when all objectives complete; `awaiting_turn_in` -> `complete` on turn-in; `active` -> `failed` only if a failure condition is defined.
     -   An objective can be a direct reference to an `Objective` resource.
     -   It can be a reference to a category (e.g., "assassination"), allowing `SpawningSystem` to randomly select an objective from `/scenarios/[scenario]/objectives/[category]/`.
 -   **Objective Resource (`.tres`)**: A custom resource defining a single objective. It contains:
-    -   The components that must be present to track the objective (e.g., a target entity must have `HealthComponent`).
-    -   The conditions for completion (e.g., `HealthComponent.hit_points <= 0`).
-    -   Attributes that can be specified or randomized (e.g., target's location, weapon to use).
+    -   **Fields**: `id`, `title`, `description`, `type`, `target_ref`, `completion_rules`, `failure_rules`.
+    -   **Targeting**: `target_ref` is resolved at runtime (e.g., an entity path, a spawned marker, or an inventory item). `SpawningSystem` writes resolved targets into the objective instance.
+    -   **Evaluation inputs**: `ObjectiveSystem` reads component data (e.g., inventory contents, dialog events, interaction signals) plus the resolved `target_ref`.
+    -   **Completion rules**: A small set of rule types (e.g., `dialog_node_reached`, `item_in_inventory`, `deliver_item_to_marker`) keeps evaluation predictable.
+    -   **Attributes**: Optional parameters per rule (e.g., dialog node id, marker pool name, item scene path).
+
+## 4.1 Dialog Resources
+
+-   **DialogTree Resource (`.tres`)**: A custom resource defining a dialog graph.
+    -   **Fields**: `id`, `start_node_id`, `nodes`.
+    -   **Node shape**: `node_id`, `speaker`, `text`, `choices`, `events`.
+    -   **Choices**: Each choice has `label`, `next_node_id`, and optional `event` for actions (e.g., `offer_job`, `accept_job`, `complete_job`).
+    -   **Events**: `DialogSystem` emits signals for events; systems update `PlayerStateComponent` or `ObjectiveSystem` accordingly.
+    -   **Conventions**: Node IDs must be unique, and dialog trees should be pure data (no logic beyond events).
 
 ## 5. Game Flow & Moddability
 
