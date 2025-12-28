@@ -12,6 +12,16 @@ The architecture avoids a pure ECS implementation in favor of a hybrid model tha
 -   **Entities as Nodes**: Entities are represented by Godot `Node`s or full `PackedScene` instances within the scene tree. Any Node meant to act as an entity will have a `ComponentHost.gd` script attached. This script manages a dictionary of the components associated with that entity.
 -   **Systems as Autoloads**: Game logic is implemented in "Systems," which are GDScript files registered as Godot Autoload singletons. These systems run globally and operate on entities by iterating through the scene tree, finding nodes with a `ComponentHost`, and processing their components.
 
+### ComponentHost API and Conventions
+
+`ComponentHost.gd` is the single source of truth for component storage and lookup on an entity node.
+
+-   **Storage**: Components are stored in a dictionary keyed by component type (use the script `class_name` or script path as the key, e.g., `HealthComponent`).
+-   **Initialization**: Expose an exported array of `Resource` components for authoring in the inspector. On `_ready`, register each component into the dictionary.
+-   **Access**: Provide helpers like `has_component(type_name)`, `get_component(type_name)`, `add_component(resource)`, and `remove_component(type_name)` for systems to use.
+-   **Signals**: Emit `component_added(component)` and `component_removed(type_name)` so systems can react without polling when needed.
+-   **Usage**: Systems should never reach into component arrays directly; always resolve via `ComponentHost` to keep access patterns consistent.
+
 ## 2. File Structure
 
 A clear file structure is crucial for organization and moddability. The following is an example structure based on a potential demo scenario.
