@@ -50,12 +50,17 @@ This sequence breaks down the demo's event flow and the systems responsible for 
 
 ### Input Map (Project Settings > Input Map)
 
+Custom actions to add or confirm:
+
 -   `move_forward`, `move_back`, `move_left`, `move_right`: `W/S/A/D`, Arrow keys
 -   `look_x`, `look_y`: Mouse motion (camera yaw/pitch)
 -   `sprint`: `Shift`
 -   `interact`: `E`
 -   `dialog_next`: `Space`, `Enter`
 -   `dialog_choice_1`..`dialog_choice_4`: `1`..`4`
+
+Built-in UI actions (already defined by Godot; just confirm bindings):
+
 -   `ui_up`, `ui_down`: Arrow keys, `W/S`, gamepad left stick
 -   `ui_accept`: `Enter`, `Space`, gamepad south button
 -   `ui_cancel`: `Esc`
