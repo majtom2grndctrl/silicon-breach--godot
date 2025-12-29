@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Objective" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/Objective.gd" id=1]
+
+[resource]
+script = ExtResource(1)
+id = "report_to_kess"
+title = "Report to Kess the Fixer"
+description = "Find Kess and report in."
+type = "dialog_node_reached"
+target_ref = ""
+completion_rules = [{"type":"dialog_node_reached","node_id":"kess_report"}]
+failure_rules = []

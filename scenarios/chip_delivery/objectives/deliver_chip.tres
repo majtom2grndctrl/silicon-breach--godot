@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Objective" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/Objective.gd" id=1]
+
+[resource]
+script = ExtResource(1)
+id = "deliver_chip"
+title = "Deliver the Chip"
+description = "Drop the chip at the marked handoff."
+type = "item_delivered"
+target_ref = "DeliverySpawn"
+completion_rules = [{"type":"item_delivered","item_path":"res://entities/chip_item.tscn","marker_id":"DeliverySpawn"}]
+failure_rules = []

@@ -37,10 +37,10 @@ func _register_component(component: Resource) -> void:
 	component_added.emit(component)
 
 func _get_component_key(component: Resource) -> StringName:
-	var class_name := component.get_class()
-	if class_name != "":
-		return StringName(class_name)
-	var script := component.get_script()
+	var script_class := component.get_class()
+	if script_class != "":
+		return StringName(script_class)
+	var script: Script = component.get_script()
 	if script and script.resource_path != "":
 		return StringName(script.resource_path)
 	return &""

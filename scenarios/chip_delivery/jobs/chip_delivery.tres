@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="Job" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://data/Job.gd" id=1]
+[ext_resource type="Resource" path="res://scenarios/chip_delivery/objectives/retrieve_chip.tres" id=2]
+[ext_resource type="Resource" path="res://scenarios/chip_delivery/objectives/deliver_chip.tres" id=3]
+
+[resource]
+script = ExtResource(1)
+id = "chip_delivery"
+title = "Chip Delivery"
+description = "Pickup the tagged chip and deliver it to the handoff."
+giver = "Kess the Fixer"
+reward = ""
+objectives = [ExtResource(2), ExtResource(3)]
+status = "available"

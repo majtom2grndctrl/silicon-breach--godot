@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogTree" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/DialogTree.gd" id=1]
+
+[resource]
+script = ExtResource(1)
+id = "chip_delivery_kess"
+start_node_id = "kess_report"
+nodes = [{"id":"kess_report","speaker":"Kess","text":"You're late. The street's wired and I'm not patient.","choices":[{"label":"What do you need?","next":"offer_job","event":null}],"events":[{"type":"complete_job","job_id":"report_to_kess"}]},{"id":"offer_job","speaker":"Kess","text":"Courier a shard across the block. Quiet. Fast. No heat.","choices":[{"label":"I'm in.","next":"job_accepted","event":{"type":"accept_job","job_path":"res://scenarios/chip_delivery/jobs/chip_delivery.tres"}},{"label":"Not now.","next":"end","event":null}],"events":[]},{"id":"job_accepted","speaker":"Kess","text":"Pickup's tagged. Don't get flatlined.","choices":[],"events":[{"type":"close_dialog"}]},{"id":"turn_in","speaker":"Kess","text":"You did good. Credits are hot and fresh.","choices":[{"label":"Thanks.","next":"end","event":{"type":"complete_job","job_id":"chip_delivery"}}],"events":[]},{"id":"end","speaker":"Kess","text":"Stay sharp.","choices":[],"events":[{"type":"close_dialog"}]}]

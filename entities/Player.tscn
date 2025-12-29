@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://entities/ComponentHost.gd" id=1]
 [ext_resource type="Script" path="res://components/PlayerStateComponent.gd" id=2]
 [ext_resource type="Script" path="res://components/InventoryComponent.gd" id=3]
+[ext_resource type="Script" path="res://entities/PlayerController.gd" id=4]
 
 [sub_resource type="Resource" id=1]
 script = ExtResource(3)
@@ -11,6 +12,31 @@ script = ExtResource(3)
 script = ExtResource(2)
 inventory = SubResource(1)
 
+[sub_resource type="SphereShape3D" id=3]
+radius = 2.5
+
+[sub_resource type="CapsuleShape3D" id=4]
+radius = 0.4
+height = 1.6
+
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource(1)
 components_list = [SubResource(2)]
+
+[node name="CameraPivot" type="Node3D" parent="."]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+spring_length = 4.0
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource(4)
+
+[node name="InteractionSensor" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionSensor"]
+shape = SubResource(3)
+
+[node name="Controller" type="Node" parent="."]
+script = ExtResource(4)

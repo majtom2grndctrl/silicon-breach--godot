@@ -7,6 +7,12 @@
 script = ExtResource(2)
 interaction_prompt = "Take Chip"
 
+[sub_resource type="SphereShape3D" id=2]
+radius = 0.35
+
 [node name="chip_item" type="Area3D"]
 script = ExtResource(1)
 components_list = [SubResource(1)]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource(2)

@@ -11,12 +11,33 @@ pool_name = "pickup"
 script = ExtResource(2)
 pool_name = "delivery"
 
+[sub_resource type="SphereShape3D" id=3]
+radius = 1.5
+
 [node name="Exterior" type="Node3D"]
 
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+position = Vector3(0, 0, 0)
+
+[node name="KessSpawn" type="Marker3D" parent="."]
+position = Vector3(2, 0, 2)
+
 [node name="PickupSpawn" type="Marker3D" parent="."]
+position = Vector3(-4, 0, 0)
 script = ExtResource(1)
 components_list = [SubResource(1)]
 
+[node name="InteractionArea" type="Area3D" parent="PickupSpawn"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PickupSpawn/InteractionArea"]
+shape = SubResource(3)
+
 [node name="DeliverySpawn" type="Marker3D" parent="."]
+position = Vector3(4, 0, 0)
 script = ExtResource(1)
 components_list = [SubResource(2)]
+
+[node name="InteractionArea" type="Area3D" parent="DeliverySpawn"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeliverySpawn/InteractionArea"]
+shape = SubResource(3)

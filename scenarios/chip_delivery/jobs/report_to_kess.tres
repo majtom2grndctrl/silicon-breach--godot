@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Job" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/Job.gd" id=1]
+[ext_resource type="Resource" path="res://scenarios/chip_delivery/objectives/report_to_kess.tres" id=2]
+
+[resource]
+script = ExtResource(1)
+id = "report_to_kess"
+title = "Report to Kess the Fixer"
+description = "Find Kess near the intersection and report in."
+giver = "Kess the Fixer"
+reward = ""
+objectives = [ExtResource(2)]
+status = "available"

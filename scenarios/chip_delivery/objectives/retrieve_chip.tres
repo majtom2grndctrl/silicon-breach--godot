@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Objective" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://data/Objective.gd" id=1]
+
+[resource]
+script = ExtResource(1)
+id = "retrieve_chip"
+title = "Retrieve the Chip"
+description = "Pick up the tagged chip."
+type = "item_in_inventory"
+target_ref = "res://entities/chip_item.tscn"
+completion_rules = [{"type":"item_in_inventory","item_path":"res://entities/chip_item.tscn"}]
+failure_rules = []

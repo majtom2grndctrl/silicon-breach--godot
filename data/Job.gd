@@ -10,3 +10,4 @@ class_name Job
 @export var status: String = "available"
 
 var objective_instances: Array = []
+var objective_statuses: Dictionary = {}
