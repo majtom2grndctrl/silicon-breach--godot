@@ -15,6 +15,7 @@ In this game, **information is power** in a world where power is very unevenly d
 ## Build, Test, and Development Commands
 - Open the project in the Godot editor (4.5): select `project.godot`, then use the editor’s Run button to play the active scene.
 - Optional CLI run (if Godot is installed in PATH): `godot --path .` opens the editor for this project.
+- Check for GDScript errors (headless): `godot --headless --path . --check-only --quit`.
 - No scripted build/test commands are present yet; add them to this file when introduced.
 
 ## Editor Setup Checklist
