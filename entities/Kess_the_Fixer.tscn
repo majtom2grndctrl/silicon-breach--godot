@@ -1,6 +1,16 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://entities/ComponentHost.gd" id=1]
+[ext_resource type="Script" path="res://components/NPCStateComponent.gd" id=2]
+[ext_resource type="Script" path="res://components/InteractionComponent.gd" id=3]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource(2)
+
+[sub_resource type="Resource" id=2]
+script = ExtResource(3)
+interaction_prompt = "Speak"
 
 [node name="Kess_the_Fixer" type="CharacterBody3D"]
 script = ExtResource(1)
+components_list = [SubResource(1), SubResource(2)]
