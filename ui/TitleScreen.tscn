@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[node name="TitleScreen" type="Control"]
+
+[node name="ScenarioList" type="ItemList" parent="."]
+
+[node name="DetailsLabel" type="Label" parent="."]
+text = "Chip Delivery"
+
+[node name="StartButton" type="Button" parent="."]
+text = "Start Demo"

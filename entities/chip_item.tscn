@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bl3bgju7okkqs"]
+
+[ext_resource type="Script" uid="uid://dla26tmtfmp7x" path="res://entities/ComponentHost.gd" id="1"]
+
+[node name="chip_item" type="Area3D"]
+script = ExtResource("1")

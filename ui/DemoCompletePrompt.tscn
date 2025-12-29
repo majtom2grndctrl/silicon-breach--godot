@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[node name="DemoCompletePrompt" type="Control"]
+visible = false
+
+[node name="Panel" type="PanelContainer" parent="."]
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+
+[node name="TitleLabel" type="Label" parent="Panel/Content"]
+text = "Demo Complete"
+
+[node name="BodyLabel" type="Label" parent="Panel/Content"]
+text = "Return to title?"
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/Content"]
+
+[node name="ReturnButton" type="Button" parent="Panel/Content/Buttons"]
+text = "Return to Title"
+
+[node name="QuitButton" type="Button" parent="Panel/Content/Buttons"]
+text = "Quit"

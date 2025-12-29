@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[node name="HUD" type="Control"]
+
+[node name="JobTitleLabel" type="Label" parent="."]
+text = "Job: Chip Delivery"
+
+[node name="Objectives" type="VBoxContainer" parent="."]
+
+[node name="ObjectiveTemplate" type="Label" parent="Objectives"]
+text = "Retrieve the chip"

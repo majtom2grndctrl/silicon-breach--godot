@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[node name="DialogBox" type="Control"]
+
+[node name="SpeakerLabel" type="Label" parent="."]
+text = "SPEAKER"
+
+[node name="BodyLabel" type="Label" parent="."]
+text = "Dialog text."
+
+[node name="Choices" type="VBoxContainer" parent="."]
+
+[node name="JobToast" type="Label" parent="."]
+visible = false
+text = "Job Accepted: Chip Delivery"

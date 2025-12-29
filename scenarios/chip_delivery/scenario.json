@@ -1,0 +1,5 @@
+{
+  "scenario_name": "Chip Delivery",
+  "starting_map": "res://scenarios/chip_delivery/maps/exterior.tscn",
+  "initial_player_jobs": ["res://scenarios/chip_delivery/jobs/report_to_kess.tres"]
+}
