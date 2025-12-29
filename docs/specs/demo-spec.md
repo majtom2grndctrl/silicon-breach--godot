@@ -161,10 +161,10 @@ Logic for the primary `Autoload` systems.
     -   `InteractionComponent` (`interaction_prompt = "Speak"`)
 -   **/entities/chip_item.tscn**: A `StaticBody3D` (or `Area3D`) with a `ComponentHost` containing:
     -   `InteractionComponent` (`interaction_prompt = "Take Chip"`)
--   **/jobs/report_to_kess.tres**: `Job` resource.
+-   **/jobs/report_to_kess.tres**: `Job` resource (script: `res://data/Job.gd`).
     -   `title: "Report to Kess the Fixer"`
     -   `objectives: [Objective resource for speaking to Kess]`
--   **/jobs/chip_delivery.tres**: `Job` resource.
+-   **/jobs/chip_delivery.tres**: `Job` resource (script: `res://data/Job.gd`).
     -   `title: "Chip Delivery"`
     -   `giver: "Kess the Fixer"`
     -   `objectives: [Objective resource for retrieve, Objective resource for deliver]`
@@ -182,6 +182,9 @@ Logic for the primary `Autoload` systems.
 -   `res://entities/Player.tscn`
 -   `res://entities/Kess_the_Fixer.tscn`
 -   `res://entities/chip_item.tscn`
+-   `res://data/Job.gd`
+-   `res://data/Objective.gd`
+-   `res://data/DialogTree.gd`
 -   `res://ui/TitleScreen.tscn`
 -   `res://ui/DialogBox.tscn`
 -   `res://ui/HUD.tscn`
@@ -210,7 +213,7 @@ Use the Godot editor for scene setup and default resources; use code for runtime
 -   **Input Map**: Define the actions and default bindings in Project Settings.
 -   **Scenes**: Build `Player.tscn`, `Kess_the_Fixer.tscn`, `chip_item.tscn`, and `TitleScreen.tscn` with their nodes and scripts.
 -   **Autoloads**: Register `GameStateSystem`, `SpawningSystem`, `InteractionSystem`, `DialogSystem`, and `ObjectiveSystem` in Project Settings.
--   **Resources**: Create `.tres` assets for jobs, objectives, and dialog trees; set fields in the inspector.
+-   **Resources**: Create `.tres` assets for jobs, objectives, and dialog trees using `res://data/Job.gd`, `res://data/Objective.gd`, and `res://data/DialogTree.gd`.
 -   **Map Markers**: Place `Marker3D` nodes with `ObjectiveSpawnPointComponent` on `exterior.tscn`.
 
 ### Implemented in Code

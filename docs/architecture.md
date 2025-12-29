@@ -39,6 +39,10 @@ A clear file structure is crucial for organization and moddability. The followin
 |   |-- SpawningSystem.gd
 |   |-- InteractionSystem.gd
 |   |-- DialogSystem.gd
+|-- data/                      # Custom Resource scripts for data assets
+|   |-- Job.gd
+|   |-- Objective.gd
+|   |-- DialogTree.gd
 |-- components/                # Component definitions (.gd) and data (.tres)
 |   |-- PlayerStateComponent.gd
 |   |-- NPCStateComponent.gd
@@ -86,14 +90,14 @@ Systems are decoupled. Spawning systems set up the world, while Logic systems re
 
 Jobs are procedurally generated from objective templates.
 
--   **Job Resource (`.tres`)**: A custom resource defining a job. It contains metadata (title, description, reward) and a list of objective specifications.
+-   **Job Resource (`.tres`)**: A custom resource using `res://data/Job.gd`. It contains metadata (title, description, reward) and a list of objective specifications.
     -   **Fields**: `id`, `title`, `description`, `giver`, `reward`, `objectives`, `status`.
     -   **Objective specs**: Each entry in `objectives` is either a direct `Objective` resource reference or a category token (e.g., `"assassination"`). `SpawningSystem` resolves tokens into concrete objective resources at runtime.
     -   **Runtime instances**: On accept, `SpawningSystem` builds a resolved list (e.g., `objective_instances`) so `ObjectiveSystem` evaluates concrete objectives, not category tokens.
     -   **Status lifecycle**: `available` -> `active` on accept; `active` -> `awaiting_turn_in` when all objectives complete; `awaiting_turn_in` -> `complete` on turn-in; `active` -> `failed` only if a failure condition is defined.
     -   An objective can be a direct reference to an `Objective` resource.
     -   It can be a reference to a category (e.g., "assassination"), allowing `SpawningSystem` to randomly select an objective from `/scenarios/[scenario]/objectives/[category]/`.
--   **Objective Resource (`.tres`)**: A custom resource defining a single objective. It contains:
+-   **Objective Resource (`.tres`)**: A custom resource using `res://data/Objective.gd`. It contains:
     -   **Fields**: `id`, `title`, `description`, `type`, `target_ref`, `completion_rules`, `failure_rules`.
     -   **Targeting**: `target_ref` is resolved at runtime (e.g., an entity path, a spawned marker, or an inventory item). `SpawningSystem` writes resolved targets into the objective instance.
     -   **Evaluation inputs**: `ObjectiveSystem` reads component data (e.g., inventory contents, dialog events, interaction signals) plus the resolved `target_ref`.
@@ -102,7 +106,7 @@ Jobs are procedurally generated from objective templates.
 
 ## 4.1 Dialog Resources
 
--   **DialogTree Resource (`.tres`)**: A custom resource defining a dialog graph.
+-   **DialogTree Resource (`.tres`)**: A custom resource using `res://data/DialogTree.gd` defining a dialog graph.
     -   **Fields**: `id`, `start_node_id`, `nodes`.
     -   **Node shape**: `node_id`, `speaker`, `text`, `choices`, `events`.
     -   **Choices**: Each choice has `label`, `next_node_id`, and optional `event` for actions (e.g., `offer_job`, `accept_job`, `complete_job`).
