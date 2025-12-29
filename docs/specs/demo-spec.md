@@ -121,22 +121,22 @@ Logic for the primary `Autoload` systems.
 ### Title Screen
 
 -   **Layout**: Scenario list on the left, details pane on the right with scenario name and a short description. Show a single primary action button: "Start Demo".
--   **Population**: `GameStateSystem` provides scenario entries from `/scenarios/` using `scenario_name` in `scenario.json`.
+-   **Population**: For now, the list is static and points at `res://scenarios/chip_delivery/scenario.json`.
 -   **Navigation**: `ui_up`/`ui_down` to select, `ui_accept` to start, `ui_cancel` to exit (if supported by platform).
--   **Transition**: On confirm, fade out the UI, call `GameStateSystem` to load the map, then fade into gameplay.
+-   **Transition**: On confirm, call `GameStateSystem` to load the map.
 
 ### Dialog UI & Choice Flow
 
 -   **Dialog box**: Bottom screen, left-aligned speaker name, body text centered in a readable box.
--   **Choices**: Present up to 4 choices with numeric labels (`1`..`4`) and highlight the current selection.
--   **Input**: `dialog_next` advances non-choice lines. Choices use `ui_up`/`ui_down` + `ui_accept` or number keys.
+-   **Choices**: Present up to 4 choices with numeric labels (`1`..`4`).
+-   **Input**: `dialog_next` advances non-choice lines. Choices use `dialog_choice_1`..`dialog_choice_4`.
 -   **Job surfacing**: When a dialog node offers/accepts a job, show a short toast (e.g., "Job Accepted: Chip Delivery").
 
 ### Job & Objective HUD
 
 -   **Placement**: Top-left HUD panel with current job title and objective checklist.
 -   **Updates**: When objectives complete, mark them with a check icon and briefly flash the line.
--   **Feedback**: Show a transient banner when the job status changes (e.g., "Objectives Complete — Return to Kess").
+-   **Feedback**: Show the active job title, status, and objective completion state.
 
 ### "Demo Complete" Prompt
 

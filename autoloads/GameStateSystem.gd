@@ -8,6 +8,10 @@ signal scenario_loaded(scenario_path: String)
 @export var remove_title_screen: bool = true
 @export var player_scene_path: String = "res://entities/Player.tscn"
 @export var kess_scene_path: String = "res://entities/Kess_the_Fixer.tscn"
+@export var title_scene_path: String = "res://ui/TitleScreen.tscn"
+@export var dialog_ui_scene_path: String = "res://ui/DialogBox.tscn"
+@export var hud_scene_path: String = "res://ui/HUD.tscn"
+@export var demo_prompt_scene_path: String = "res://ui/DemoCompletePrompt.tscn"
 
 var current_map: Node3D = null
 
@@ -42,6 +46,7 @@ func _post_load_scenario(scenario_path: String, scenario_data: Dictionary) -> vo
 		var title: Node = get_tree().root.get_node_or_null("TitleScreen")
 		if title:
 			title.queue_free()
+	_spawn_ui()
 	_spawn_player()
 	_spawn_kess()
 	_assign_initial_jobs(scenario_data)
@@ -117,6 +122,48 @@ func _assign_initial_jobs(scenario_data: Dictionary) -> void:
 				var spawning: SpawningSystemRuntime = get_node_or_null("/root/SpawningSystem") as SpawningSystemRuntime
 				if spawning:
 					spawning.initialize_job(job)
+
+func return_to_title() -> void:
+	if current_map and is_instance_valid(current_map):
+		current_map.queue_free()
+	current_map = null
+	_clear_ui()
+	_spawn_title()
+
+func _spawn_title() -> void:
+	if get_tree().root.get_node_or_null("TitleScreen") != null:
+		return
+	var packed: PackedScene = load(title_scene_path) as PackedScene
+	if packed == null:
+		return
+	var title: Control = packed.instantiate() as Control
+	if title == null:
+		return
+	title.name = "TitleScreen"
+	get_tree().root.add_child(title)
+
+func _spawn_ui() -> void:
+	_spawn_ui_scene(dialog_ui_scene_path, "DialogBox")
+	_spawn_ui_scene(hud_scene_path, "HUD")
+	_spawn_ui_scene(demo_prompt_scene_path, "DemoCompletePrompt")
+
+func _spawn_ui_scene(path: String, node_name: String) -> void:
+	if get_tree().root.get_node_or_null(node_name) != null:
+		return
+	var packed: PackedScene = load(path) as PackedScene
+	if packed == null:
+		return
+	var instance: Control = packed.instantiate() as Control
+	if instance == null:
+		return
+	instance.name = node_name
+	get_tree().root.add_child(instance)
+
+func _clear_ui() -> void:
+	for node_name in ["DialogBox", "HUD", "DemoCompletePrompt"]:
+		var node := get_tree().root.get_node_or_null(node_name)
+		if node:
+			node.queue_free()
 
 func _load_job(path: String) -> Job:
 	var resource: Job = load(path) as Job

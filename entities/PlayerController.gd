@@ -5,16 +5,12 @@ class_name PlayerController
 @export var sprint_speed: float = 7.0
 @export var acceleration: float = 12.0
 @export var deceleration: float = 18.0
-@export var mouse_sensitivity: float = 0.0025
-@export var min_pitch_deg: float = -35.0
-@export var max_pitch_deg: float = 55.0
-@export var capture_mouse: bool = true
+@export var capture_mouse: bool = false
 
 @onready var body: CharacterBody3D = get_parent() as CharacterBody3D
 @onready var camera_pivot: Node3D = body.get_node("CameraPivot") as Node3D
 
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
-var _pitch_rad: float = 0.0
 
 func _ready() -> void:
 	if capture_mouse:
@@ -22,16 +18,11 @@ func _ready() -> void:
 	if body:
 		body.floor_snap_length = 0.4
 		body.floor_max_angle = deg_to_rad(45.0)
+	if camera_pivot:
+		camera_pivot.rotation = Vector3(deg_to_rad(-60.0), 0.0, 0.0)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and body and camera_pivot:
-		body.rotate_y(-event.relative.x * mouse_sensitivity)
-		_pitch_rad = clamp(
-			_pitch_rad - event.relative.y * mouse_sensitivity,
-			deg_to_rad(min_pitch_deg),
-			deg_to_rad(max_pitch_deg)
-		)
-		camera_pivot.rotation.x = _pitch_rad
+	pass
 
 func _physics_process(delta: float) -> void:
 	if body == null:
@@ -39,7 +30,7 @@ func _physics_process(delta: float) -> void:
 	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction := Vector3(input_vector.x, 0.0, input_vector.y)
 	if direction.length_squared() > 0.0:
-		direction = (body.global_transform.basis * direction).normalized()
+		direction = direction.normalized()
 	var target_speed := walk_speed
 	if Input.is_action_pressed("sprint"):
 		target_speed = sprint_speed

@@ -19,9 +19,16 @@ interaction_prompt = "Speak"
 radius = 0.4
 height = 1.6
 
+[sub_resource type="CapsuleMesh" id=4]
+radius = 0.4
+height = 1.6
+
 [node name="Kess_the_Fixer" type="CharacterBody3D"]
 script = ExtResource(1)
 components_list = [SubResource(1), SubResource(2)]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource(3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource(4)

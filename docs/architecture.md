@@ -108,8 +108,8 @@ Jobs are procedurally generated from objective templates.
 
 -   **DialogTree Resource (`.tres`)**: A custom resource using `res://data/DialogTree.gd` defining a dialog graph.
     -   **Fields**: `id`, `start_node_id`, `nodes`.
-    -   **Node shape**: `node_id`, `speaker`, `text`, `choices`, `events`.
-    -   **Choices**: Each choice has `label`, `next_node_id`, and optional `event` for actions (e.g., `offer_job`, `accept_job`, `complete_job`).
+    -   **Node shape**: `id`, `speaker`, `text`, `choices`, `events`, optional `next_node_id`.
+    -   **Choices**: Each choice has `label`, `next`, and optional `event` for actions (e.g., `accept_job`, `complete_job`).
     -   **Events**: `DialogSystem` emits signals for events; systems update `PlayerStateComponent` or `ObjectiveSystem` accordingly.
     -   **Conventions**: Node IDs must be unique, and dialog trees should be pure data (no logic beyond events).
 
@@ -117,11 +117,11 @@ Jobs are procedurally generated from objective templates.
 
 The game is designed to be data-driven and easily moddable.
 
-1.  **Main Menu**: The game starts with a main menu scene. A script reads the `/scenarios/` directory to populate a list of available scenarios for the player to choose from.
+1.  **Main Menu**: The game starts with a main menu scene. For now, the scenario list is static and points at `res://scenarios/chip_delivery/scenario.json`.
 2.  **Scenario Loading**:
     -   Upon selection, a `GameStateSystem` reads the corresponding `scenario.json` file.
-    -   This JSON file contains information about the starting map (`.tscn`), player start position, initial characters, and available jobs.
-    -   The system loads the map scene and populates a `JobBoard` or NPC with the available `Job` resources.
+    -   This JSON file contains the starting map (`.tscn`) and initial player jobs.
+    -   The system loads the map scene, spawns the player/NPCs, and spawns UI scenes (`DialogBox`, `HUD`, `DemoCompletePrompt`) at the root.
 3.  **Job Execution**:
     -   The player accepts a job.
     -   `SpawningSystem` reads the `Job` resource, resolves its objectives (randomizing where necessary), and populates the current map with the required entities and components.
